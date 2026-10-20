@@ -35,22 +35,14 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## GeoIP OSINT lookup
+## IP Intelligence (frontend)
 
-Data comes live from public APIs; there is no local database to maintain:
+This Next.js app is frontend only. Lookups, Google sign-in and profiles are served by the separate
+backend in `~/Desktop/osint-backend` (Node.js + Express + PostgreSQL); see its README.
 
-- **ip-api.com**: geolocation, ASN, ISP, reverse DNS, proxy/hosting/mobile flags. The free tier is
-  HTTP-only, **non-commercial**, and limited to 45 single / 15 batch requests per minute. For commercial use,
-  buy a key and set `IP_API_KEY`, which switches to `https://pro.ip-api.com`.
-- **RIPEstat**: BGP-announced prefix and origin ASN (free, no key). If it is unavailable, results fall back
-  to ip-api.com data with a warning.
+```bash
+cp .env.example .env.local   # NEXT_PUBLIC_API_URL=http://localhost:4000
+npm run dev                  # http://localhost:3000 (start the backend too)
+```
 
-Results are cached in memory for an hour. Ranges of up to 256 addresses are geolocated address by address;
-larger ranges are split along announced BGP prefixes, and the first address of each prefix is geolocated.
-
-Run `npm run dev` and open http://localhost:3000.
-
-`GET /api/lookup` follows core-engine's `/lookup` contract (`server/cidr_handler.go`):
-`?ip=8.8.8.8`, `?cidr=8.8.8.0/24` or `?range=8.8.8.0-8.8.8.255`, responding with
-`{ "message": "success", "data": { ip, cidr, start, end, asn, org, city, country, ... } }`
-or `{ "message": "error", "data": { "error": "..." } }`. `?q=` auto-detects the type (and accepts hostnames).
+Pages: `/` lookup, `/map` map / earth view, `/login` Google sign-in, `/profile` account and search history.

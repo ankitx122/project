@@ -1,4 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import AppHeader from "@/components/AppHeader";
+import AuthProvider from "@/components/auth/AuthProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "IP Intelligence Lookup",
-  description: "OSINT GeoIP lookup for IPs, CIDRs, ranges and hostnames",
+  title: "IP Intelligence",
+  description: "Geolocation, ownership and routing for any IP, CIDR, range or hostname",
 };
 
 export default function RootLayout({ children }) {
@@ -23,7 +25,12 @@ export default function RootLayout({ children }) {
       style={{ colorScheme: "dark" }}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100">{children}</body>
+      <body className="flex min-h-full flex-col bg-zinc-950 text-zinc-100">
+        <AuthProvider>
+          <AppHeader />
+          {children}
+        </AuthProvider>
+      </body>
     </html>
   );
 }
