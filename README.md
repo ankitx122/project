@@ -13,10 +13,6 @@ project/
 The frontend only talks to the backend; the backend fetches live data from ip-api.com (location,
 ASN), RIPEstat (BGP routing) and RDAP (WHOIS) and stores users, history and watchlists in PostgreSQL.
 
-> **Sign-in is Google only.** The backend has no email + password accounts: there is no register,
-> login or password-reset API, and no passwords are stored. The email and password form on the
-> login page is UI only — it validates what you type, then shows a toast asking you to continue with
-> Google. The same happens for "Forgot password?".
 
 ## Requirements
 
@@ -24,14 +20,8 @@ ASN), RIPEstat (BGP routing) and RDAP (WHOIS) and stores users, history and watc
 - **The Google client secret**, from the project owner (see step 1)
 - Nothing else — the backend can run its own local PostgreSQL, no system install needed
 
-## 1. Get the Google client secret
 
-Sign-in uses the project's shared Google OAuth client. Its client ID is already in
-`backend/.env.example`; the **client secret is not in git**. Ask the project owner for it and
-for your Google account to be added as a test user (see [For the project owner](#for-the-project-owner)).
-Never commit the secret or paste it into issues or chat.
-
-## 2. Set up the backend
+## 1. Set up the backend
 
 ```bash
 cd backend
@@ -39,11 +29,6 @@ npm install
 cp .env.example .env
 ```
 
-Open `backend/.env` and paste the secret from step 1; everything else already works for local use:
-
-```env
-GOOGLE_CLIENT_SECRET=GOCSPX-...   # from the project owner
-```
 
 Then start the database and the API, each in its own terminal:
 
@@ -60,7 +45,7 @@ Database tables are created automatically when the API starts.
 
 > Using your own PostgreSQL instead? Set `DATABASE_URL` in `backend/.env` and skip `npm run db`.
 
-## 3. Set up the frontend
+## 2. Set up the frontend
 
 ```bash
 cd frontend
