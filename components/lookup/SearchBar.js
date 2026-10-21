@@ -25,7 +25,6 @@ export default function SearchBar({ query, setQuery, run, loading, autoFocus = t
   const hasQuery = query.length > 0;
   const s = SIZES[size];
 
-  // Press "/" anywhere to jump to the search box.
   useEffect(() => {
     const onKey = (e) => {
       if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey || isTyping(e.target)) return;

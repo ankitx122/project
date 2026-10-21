@@ -1,6 +1,5 @@
 import { fmt } from "@/lib/format";
 
-// Distribution list: label + count with a thin proportional bar underneath.
 export default function Bars({ items, total, label }) {
   const t = Number(total) || 1;
   return (

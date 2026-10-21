@@ -13,7 +13,6 @@ function Row({ label, value, mono }) {
   );
 }
 
-// Hover card for a map / globe marker.
 export default function MarkerTooltip({ marker, style }) {
   const [first] = marker.items;
   const single = marker.items.length === 1;

@@ -7,7 +7,7 @@ import { buildMarkers } from "@/components/geo/markers";
 import Notice from "@/components/ui/Notice";
 import StatStrip from "@/components/ui/StatStrip";
 import SaveToWatchlist from "@/components/watchlists/SaveToWatchlist";
-import { api, send } from "@/lib/api";
+import { bulkLookup, getWatchlist } from "@/services/api";
 import { download, toCsv } from "@/lib/format";
 import BulkTable, { filterRows } from "./BulkTable";
 import extractIps from "./extractIps";
@@ -47,17 +47,16 @@ export default function BulkLookup() {
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState(NO_FILTERS);
   const [focusId, setFocusId] = useState(null);
-  const [source, setSource] = useState(null); // name of the file or watchlist the text came from
+  const [source, setSource] = useState(null);
   const fileRef = useRef(null);
 
   const ips = useMemo(() => extractIps(text), [text]);
   const tooMany = ips.length > MAX_IPS;
 
-  // /bulk?list=<id> opens with the IPs saved in that watchlist.
   useEffect(() => {
     const listId = new URLSearchParams(window.location.search).get("list");
     if (!listId) return;
-    api(`/api/watchlists/${encodeURIComponent(listId)}`).then(
+    getWatchlist(listId).then(
       ({ list, items }) => {
         setText(items.filter((i) => i.kind === "ip").map((i) => i.query).join("\n"));
         setSource(`watchlist “${list.name}”`);
@@ -70,7 +69,7 @@ export default function BulkLookup() {
     setLoading(true);
     setError(null);
     try {
-      setResult(await send("/api/bulk", "POST", { items: ips }));
+      setResult(await bulkLookup(ips));
       setFilters(NO_FILTERS);
       setFocusId(null);
     } catch (e) {

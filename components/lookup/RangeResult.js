@@ -25,18 +25,15 @@ const blocksCsv = (blocks) =>
     ]),
   );
 
-// One colour per top network, shared by the address-space strip, its legend and the table.
 const NETWORK_COLORS = ["#34d399", "#38bdf8", "#a78bfa", "#fbbf24", "#f472b6", "#fb923c"];
-const OTHER_COLOR = "#52525b"; // zinc-600
-const NO_DATA_COLOR = "#27272a"; // zinc-800
+const OTHER_COLOR = "#52525b";
+const NO_DATA_COLOR = "#27272a";
 
 const blockLabel = (s) => (s.cidrs.length === 1 && s.cidrs[0] !== "…" ? s.cidrs[0] : `${s.start} – ${s.end}`);
 
-// Share of the range as a percentage; BigInt keeps /8s and IPv6 counts exact before scaling.
 const share = (part, total) => (Number(total) ? Number((BigInt(part) * 1_000_000n) / BigInt(total)) / 10_000 : 0);
 const pct = (p) => (p >= 10 || p === 0 ? p.toFixed(0) : p.toFixed(1)) + "%";
 
-// Horizontal map of the range: each block is a segment sized by its addresses, coloured by network.
 function AddressSpace({ data, colorOf }) {
   const total = data.blocks.reduce((sum, s) => sum + BigInt(s.count), 0n);
   const legend = data.summary.asns.slice(0, NETWORK_COLORS.length);

@@ -9,7 +9,6 @@ import { place } from "@/lib/format";
 
 const FLAG_LABELS = { proxy: "Proxy", hosting: "Hosting", mobile: "Mobile" };
 
-// Compares IPs numerically within a version (IPv4 before IPv6), so 9.x sorts before 10.x.
 function ipKey(ip) {
   if (ip.includes(":")) return `6:${ip}`;
   return `4:${ip.split(".").map((p) => p.padStart(3, "0")).join(".")}`;

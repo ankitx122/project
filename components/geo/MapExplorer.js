@@ -20,10 +20,8 @@ function subject(data) {
 export default function MapExplorer() {
   const lookup = useLookup();
   const { data, error, loading, searched, run } = lookup;
-  // Memoised so the map only treats a new search, not a re-render, as new results.
   const markers = useMemo(() => buildMarkers(data), [data]);
   const [focus, setFocus] = useState({ id: null, for: null });
-  // Focus belongs to one result set; a new search clears it.
   const focusId = focus.for === data ? focus.id : null;
   const totalIps = markers.reduce((n, m) => n + m.count, 0);
 

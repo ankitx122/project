@@ -1,7 +1,5 @@
 import { place } from "@/lib/format";
 
-// Turn any lookup result (ip / host / cidr / range) into map markers. Results that share
-// coordinates are grouped into one marker so pins don't stack on top of each other.
 export function buildMarkers(data) {
   if (!data) return [];
   const entries = [];
@@ -60,7 +58,6 @@ function ipEntry(r) {
   };
 }
 
-// Position a tooltip beside an anchor point, flipping left near the right edge (as the dashboard does).
 export function tooltipStyle(x, y, width, height) {
   const flip = x > width * 0.65;
   return {

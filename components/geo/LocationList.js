@@ -1,6 +1,5 @@
 import Flag from "@/components/ui/Flag";
 
-// Plotted locations; selecting one focuses it on the map / globe.
 export default function LocationList({ markers, focusId, onFocus }) {
   return (
     <ul className="space-y-0.5">

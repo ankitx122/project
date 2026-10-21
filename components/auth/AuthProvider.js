@@ -1,16 +1,15 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { api } from "@/lib/api";
+import { getMe, logout } from "@/services/api";
 
 const AuthContext = createContext({ user: null, loading: true, refresh: async () => {}, signOut: async () => {} });
 
-// Holds the signed-in user (from the API's session cookie) for the whole app.
 export default function AuthProvider({ children }) {
   const [state, setState] = useState({ user: null, loading: true, error: null });
 
   const loadMe = () =>
-    api("/api/me").then(
+    getMe().then(
       (data) => ({ user: data.user, loading: false, error: null }),
       (e) => ({ user: null, loading: false, error: e.message }),
     );
@@ -19,7 +18,7 @@ export default function AuthProvider({ children }) {
 
   const signOut = useCallback(async () => {
     try {
-      await api("/auth/logout", { method: "POST" });
+      await logout();
     } finally {
       setState({ user: null, loading: false, error: null });
     }

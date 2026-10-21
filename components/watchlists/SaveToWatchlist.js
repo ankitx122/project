@@ -6,19 +6,16 @@ import { Bookmark, BookmarkCheck, Check, Loader2, Plus } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { ActionLink } from "@/components/lookup/ResultHeader";
 import usePopover from "@/components/ui/usePopover";
-import { api, send } from "@/lib/api";
+import { addWatchlistItems, createWatchlist, getWatchlists, removeWatchlistItem } from "@/services/api";
 
-// "Save" button + popover that adds lookups to the user's watchlists.
-// items: [{ query, summary? }]. With a single item the popover also shows which lists already
-// hold it (click again to remove) and takes an optional note.
 export default function SaveToWatchlist({ items, label = "Save", align = "right" }) {
   const { user } = useAuth();
   const { open, setOpen, ref } = usePopover();
   const single = items.length === 1 ? items[0] : null;
   const [lists, setLists] = useState(null);
   const [error, setError] = useState(null);
-  const [busy, setBusy] = useState(null); // list id being changed, or "new"
-  const [added, setAdded] = useState({}); // list id -> true, for multi-item saves
+  const [busy, setBusy] = useState(null);
+  const [added, setAdded] = useState({});
   const [note, setNote] = useState("");
   const [newName, setNewName] = useState("");
 
@@ -28,7 +25,7 @@ export default function SaveToWatchlist({ items, label = "Save", align = "right"
   const signedIn = !!user;
 
   function load() {
-    return api(`/api/watchlists${singleQuery ? `?q=${encodeURIComponent(singleQuery)}` : ""}`).then(
+    return getWatchlists(singleQuery).then(
       (data) => {
         setLists(data.lists);
         setError(null);
@@ -37,11 +34,10 @@ export default function SaveToWatchlist({ items, label = "Save", align = "right"
     );
   }
 
-  // For a single lookup, check up front whether it's already saved so the button can say so.
   useEffect(() => {
     if (!signedIn || !singleQuery) return;
     let active = true;
-    api(`/api/watchlists?q=${encodeURIComponent(singleQuery)}`).then(
+    getWatchlists(singleQuery).then(
       (data) => active && setLists(data.lists),
       () => {},
     );
@@ -57,9 +53,10 @@ export default function SaveToWatchlist({ items, label = "Save", align = "right"
   }
 
   async function addTo(list) {
-    const res = await send(`/api/watchlists/${list.id}/items`, "POST", {
-      items: items.map((i) => ({ query: i.query, summary: i.summary, ...(single && note.trim() && { note }) })),
-    });
+    const res = await addWatchlistItems(
+      list.id,
+      items.map((i) => ({ query: i.query, summary: i.summary, ...(single && note.trim() && { note }) })),
+    );
     const itemId = single ? res.items[0]?.id : null;
     setLists((ls) => ls.map((l) => (l.id === list.id ? { ...l, itemId, itemCount: l.itemCount + (single ? 1 : items.length) } : l)));
     if (!single) setAdded((a) => ({ ...a, [list.id]: true }));
@@ -70,7 +67,7 @@ export default function SaveToWatchlist({ items, label = "Save", align = "right"
     setError(null);
     try {
       if (single && list.itemId) {
-        await send(`/api/watchlists/${list.id}/items/${list.itemId}`, "DELETE");
+        await removeWatchlistItem(list.id, list.itemId);
         setLists((ls) => ls.map((l) => (l.id === list.id ? { ...l, itemId: null, itemCount: l.itemCount - 1 } : l)));
       } else {
         await addTo(list);
@@ -88,7 +85,7 @@ export default function SaveToWatchlist({ items, label = "Save", align = "right"
     setBusy("new");
     setError(null);
     try {
-      const { list } = await send("/api/watchlists", "POST", { name: newName });
+      const { list } = await createWatchlist({ name: newName });
       setLists((ls) => [{ ...list, itemId: null }, ...(ls ?? [])]);
       setNewName("");
       await addTo(list);

@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* The app is dark-only. */
 :root {
   --background: #09090b;
   --foreground: #f4f4f5;
@@ -24,13 +23,11 @@ body {
   background: rgb(16 185 129 / 0.3);
 }
 
-/* Quiet scrollbars for the dense panels. */
 * {
   scrollbar-width: thin;
   scrollbar-color: #3f3f46 transparent;
 }
 
-/* Home page hero: faint dot grid with a soft green glow, fading out downwards. */
 .hero-backdrop {
   background:
     radial-gradient(ellipse 55% 55% at 50% 0%, rgb(16 185 129 / 0.13), transparent 70%),
@@ -39,8 +36,6 @@ body {
   -webkit-mask-image: linear-gradient(to bottom, black 35%, transparent);
 }
 
-/* MapLibre maps: pulsing result pins and a dark attribution control. */
-/* Pin size and colours are set inline in VectorMap; this only adds the pulse. */
 .map-pin-ring {
   animation: map-pin-pulse 2.4s infinite ease-out;
 }
@@ -57,7 +52,6 @@ body {
   }
 }
 
-/* Extra class in the selector so these beat MapLibre's own stylesheet, which loads later. */
 .vector-map .maplibregl-ctrl.maplibregl-ctrl-attrib,
 .vector-map .maplibregl-ctrl-attrib.maplibregl-compact {
   background: rgba(24, 24, 27, 0.85);

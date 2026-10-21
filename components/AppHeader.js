@@ -37,7 +37,6 @@ export default function AppHeader() {
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
-                {/* Icons only on phones, so all links fit beside the account menu. */}
                 <span className="sr-only sm:not-sr-only">{label}</span>
               </Link>
             );

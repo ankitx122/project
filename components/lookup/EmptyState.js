@@ -58,7 +58,6 @@ function Chip({ children, onClick, title, muted }) {
   );
 }
 
-// One-click example queries (and recent searches) under the hero search box.
 export function HeroSuggestions({ run, history }) {
   return (
     <div className="mt-5 space-y-3">
@@ -84,7 +83,6 @@ export function HeroSuggestions({ run, history }) {
   );
 }
 
-// What a lookup returns.
 export function Features() {
   const { user } = useAuth();
   return (

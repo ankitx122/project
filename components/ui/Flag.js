@@ -1,4 +1,3 @@
-// Country flag image; emoji flags don't render on Windows.
 export default function Flag({ code, className = "" }) {
   if (!code || code.length !== 2) return null;
   const c = code.toLowerCase();

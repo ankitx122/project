@@ -5,7 +5,6 @@ export const metadata = {
   title: "Sign in · IP Intelligence",
 };
 
-// Split layout on wide screens: the green welcome panel on the left, the form on the right.
 export default function LoginPage() {
   return (
     <main className="grid flex-1 gap-4 p-3 sm:p-4 lg:min-h-[calc(100dvh-3.5rem-1px)] lg:grid-cols-2">

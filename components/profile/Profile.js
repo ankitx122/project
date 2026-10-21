@@ -11,7 +11,7 @@ import Badge from "@/components/ui/Badge";
 import Notice from "@/components/ui/Notice";
 import Section from "@/components/ui/Section";
 import StatStrip from "@/components/ui/StatStrip";
-import { api } from "@/lib/api";
+import { clearHistory as clearSearchHistory, getHistory } from "@/services/api";
 import { formatDate, KIND_LABELS, timeAgo } from "@/lib/format";
 
 export default function Profile() {
@@ -21,11 +21,10 @@ export default function Profile() {
 
   const userId = user?.id;
 
-  // Load history, and refresh the user so the search count includes lookups made since the app loaded.
   useEffect(() => {
     if (!userId) return;
     let active = true;
-    api("/api/me/history?limit=100").then(
+    getHistory(100).then(
       (data) => active && setHistory({ items: data.items, error: null }),
       (e) => active && setHistory({ items: [], error: e.message }),
     );
@@ -51,7 +50,7 @@ export default function Profile() {
 
   async function clearHistory() {
     if (!window.confirm("Delete your entire search history? This can't be undone.")) return;
-    await api("/api/me/history", { method: "DELETE" });
+    await clearSearchHistory();
     setHistory({ items: [], error: null });
     refresh();
   }
@@ -131,7 +130,6 @@ export default function Profile() {
             </div>
           )
         ) : (
-          // Long histories scroll inside the panel instead of stretching the page.
           <ul className="max-h-[28rem] divide-y divide-zinc-800/70 overflow-y-auto overscroll-contain">
             {history.items.map((h) => (
               <li key={h.id} className="group flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-zinc-900/60">

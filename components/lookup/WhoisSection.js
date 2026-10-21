@@ -7,7 +7,7 @@ import CopyButton from "@/components/ui/CopyButton";
 import Field, { FieldList } from "@/components/ui/Field";
 import Flag from "@/components/ui/Flag";
 import Section from "@/components/ui/Section";
-import { api } from "@/lib/api";
+import { whois } from "@/services/api";
 import { formatDate } from "@/lib/format";
 
 const ROLE_LABELS = { registrant: "Registrant", abuse: "Abuse", administrative: "Admin", technical: "Technical", noc: "NOC" };
@@ -28,14 +28,12 @@ function Contact({ contact }) {
   );
 }
 
-// Registration record (RDAP / WHOIS) for an IP, network or AS number, loaded after the main result.
-// Remount it (key={query}) for a new query.
 export default function WhoisSection({ query }) {
   const [state, setState] = useState({ data: null, error: null });
 
   useEffect(() => {
     let active = true;
-    api(`/api/whois?q=${encodeURIComponent(query)}`).then(
+    whois(query).then(
       (data) => active && setState({ data, error: null }),
       (e) => active && setState({ data: null, error: e.message }),
     );

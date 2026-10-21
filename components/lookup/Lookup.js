@@ -13,7 +13,6 @@ import ResultHeader, { ActionLink } from "./ResultHeader";
 import SearchBar from "./SearchBar";
 import useLookup from "./useLookup";
 
-// Result views are split out and only load once there is a result of that type.
 const IpResult = dynamic(() => import("./IpResult"), { loading: ResultSkeleton });
 const RangeResult = dynamic(() => import("./RangeResult"), { loading: ResultSkeleton });
 
@@ -21,8 +20,6 @@ export default function Lookup() {
   const lookup = useLookup();
   const { data, error, loading, history, run, searched } = lookup;
 
-  // Before the first search the page is a hero; afterwards a compact results layout. The search
-  // box stays at the same place in the tree in both, so it keeps focus and input across the switch.
   const idle = !data && !loading && !error;
 
   return (
@@ -61,7 +58,6 @@ export default function Lookup() {
           <div className="mt-8 space-y-8">
             <Notices error={error} data={data} />
             {data ? (
-              // Keep the current result on screen (dimmed) while the next search loads, so nothing blinks.
               <div className={`transition-opacity ${loading ? "pointer-events-none opacity-50" : ""}`} aria-busy={loading}>
                 <Result data={data} query={searched} />
               </div>

@@ -4,7 +4,6 @@ export function FieldList({ children }) {
   return <dl className="divide-y divide-zinc-800/70">{children}</dl>;
 }
 
-// Rows without data are left out entirely rather than shown as placeholders.
 export default function Field({ label, value, mono }) {
   if (isEmpty(value)) return null;
   return (

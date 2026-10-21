@@ -9,7 +9,6 @@ const VectorMap = dynamic(() => import("./VectorMap"), {
   loading: () => <div className="h-full w-full animate-pulse bg-zinc-900/60" />,
 });
 
-// Small, non-interactive map preview for a single result (no scroll/drag capture).
 export default function MiniMap({ data }) {
   const markers = useMemo(() => buildMarkers(data), [data]);
   if (!markers.length) return null;

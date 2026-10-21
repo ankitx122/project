@@ -1,6 +1,5 @@
 import CopyButton from "@/components/ui/CopyButton";
 
-// Title row shared by the IP, host and range results: monospace subject, meta line, actions.
 export default function ResultHeader({ title, copy, meta, badges, actions, as: Heading = "h2" }) {
   return (
     <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">

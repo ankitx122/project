@@ -5,10 +5,9 @@ import { Bookmark, Loader2, Plus } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import GoogleButton from "@/components/auth/GoogleButton";
 import Notice from "@/components/ui/Notice";
-import { api, send } from "@/lib/api";
+import { createWatchlist, getWatchlists } from "@/services/api";
 import WatchlistDetail from "./WatchlistDetail";
 
-// Watchlists page: the user's lists on the left, the selected list (kept in ?list=) on the right.
 export default function Watchlists() {
   const { user, loading } = useAuth();
   const [lists, setLists] = useState(null);
@@ -22,7 +21,7 @@ export default function Watchlists() {
   useEffect(() => {
     if (!userId) return;
     let active = true;
-    api("/api/watchlists").then(
+    getWatchlists().then(
       (data) => {
         if (!active) return;
         setLists(data.lists);
@@ -47,7 +46,7 @@ export default function Watchlists() {
     setCreating(true);
     setError(null);
     try {
-      const { list } = await send("/api/watchlists", "POST", { name });
+      const { list } = await createWatchlist({ name });
       setLists((ls) => [list, ...ls]);
       setName("");
       select(list.id);
@@ -58,7 +57,6 @@ export default function Watchlists() {
     }
   }
 
-  // Keeps the sidebar (name, count, order) in step with edits made in the detail view.
   function onListChange(id, patch) {
     setLists((ls) => {
       if (patch === null) return ls.filter((l) => l.id !== id);

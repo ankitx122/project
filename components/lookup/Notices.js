@@ -1,6 +1,5 @@
 import Notice from "@/components/ui/Notice";
 
-// Request error plus any data-source warnings carried on the result.
 export default function Notices({ error, data }) {
   const warnings = data?.warnings ?? data?.results?.[0]?.warnings ?? [];
   if (!error && !warnings.length) return null;

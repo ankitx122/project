@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { api } from "@/lib/api";
+import { lookup } from "@/services/api";
 
 const HISTORY_KEY = "geoip-history";
 
-// Search state shared by the lookup and map pages; the query is mirrored into ?q= so
-// results can be shared and carried between pages.
 export default function useLookup() {
   const [query, setQuery] = useState("");
   const [data, setData] = useState(null);
@@ -14,7 +12,6 @@ export default function useLookup() {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
   const [searched, setSearched] = useState("");
-  // Each search (or clear) gets a new id, so a slow response can't overwrite a newer state.
   const requestId = useRef(0);
 
   function loadHistory() {
@@ -30,7 +27,6 @@ export default function useLookup() {
     window.history.replaceState(null, "", window.location.pathname);
   }
 
-  // Emptying the search box clears the previous result too.
   function updateQuery(value) {
     setQuery(value);
     if (!value.trim()) clear();
@@ -44,7 +40,7 @@ export default function useLookup() {
     setLoading(true);
     setError(null);
     try {
-      const result = await api(`/api/lookup?q=${encodeURIComponent(q)}`);
+      const result = await lookup(q);
       if (id !== requestId.current) return;
       setData(result);
       setSearched(q);
@@ -64,7 +60,6 @@ export default function useLookup() {
   }
 
   useEffect(() => {
-    // localStorage only exists on the client, so it has to be read after hydration.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadHistory();
     const q = new URLSearchParams(window.location.search).get("q");

@@ -14,7 +14,6 @@ function ControlButton({ label, onClick, children }) {
   );
 }
 
-// Zoom in / out, fit-to-results and whole-world buttons for the map views.
 export default function MapControls({ onZoomIn, onZoomOut, onReset, onWorld }) {
   return (
     <div className="absolute left-3 top-3 z-10 flex flex-col divide-y divide-zinc-800 overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/90 shadow-lg shadow-black/30 backdrop-blur">

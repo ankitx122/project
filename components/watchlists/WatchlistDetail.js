@@ -5,15 +5,20 @@ import { useEffect, useState } from "react";
 import { Download, Layers, Loader2, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { ActionLink } from "@/components/lookup/ResultHeader";
 import Notice from "@/components/ui/Notice";
-import { api, send } from "@/lib/api";
+import {
+  addWatchlistItems,
+  deleteWatchlist,
+  getWatchlist,
+  removeWatchlistItem,
+  updateWatchlist,
+  updateWatchlistItem,
+} from "@/services/api";
 import { download, formatDate, toCsv } from "@/lib/format";
 import WatchlistItem from "./WatchlistItem";
 
 const INPUT =
   "h-9 rounded-md border border-zinc-800 bg-zinc-950 px-3 text-[13px] text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-emerald-500/50";
 
-// One list: name / description (editable), add form, filter and the saved items.
-// onChange(patch) tells the page about renames and count changes; onChange(null) means deleted.
 export default function WatchlistDetail({ id, onChange }) {
   const [list, setList] = useState(null);
   const [items, setItems] = useState(null);
@@ -25,7 +30,7 @@ export default function WatchlistDetail({ id, onChange }) {
 
   useEffect(() => {
     let active = true;
-    api(`/api/watchlists/${id}`).then(
+    getWatchlist(id).then(
       (data) => {
         if (!active) return;
         setList(data.list);
@@ -38,7 +43,6 @@ export default function WatchlistDetail({ id, onChange }) {
     };
   }, [id]);
 
-  // Runs a change, showing its error instead of throwing.
   async function attempt(fn) {
     setError(null);
     try {
@@ -51,7 +55,7 @@ export default function WatchlistDetail({ id, onChange }) {
   async function saveDetails(e) {
     e.preventDefault();
     await attempt(async () => {
-      const { list: updated } = await send(`/api/watchlists/${id}`, "PATCH", draft);
+      const { list: updated } = await updateWatchlist(id, draft);
       setList((l) => ({ ...l, ...updated }));
       onChange({ name: updated.name, description: updated.description });
       setEditing(false);
@@ -61,7 +65,7 @@ export default function WatchlistDetail({ id, onChange }) {
   async function removeList() {
     if (!window.confirm(`Delete “${list.name}” and its ${items.length} saved item${items.length === 1 ? "" : "s"}? This can't be undone.`)) return;
     await attempt(async () => {
-      await send(`/api/watchlists/${id}`, "DELETE");
+      await deleteWatchlist(id);
       onChange(null);
     });
   }
@@ -71,7 +75,7 @@ export default function WatchlistDetail({ id, onChange }) {
     if (!adding.query.trim()) return;
     setAdding((a) => ({ ...a, busy: true }));
     await attempt(async () => {
-      const { items: added } = await send(`/api/watchlists/${id}/items`, "POST", { query: adding.query, note: adding.note });
+      const { items: added } = await addWatchlistItems(id, [{ query: adding.query, note: adding.note }]);
       const next = [...added, ...items.filter((i) => !added.some((a) => a.id === i.id))];
       setItems(next);
       onChange({ itemCount: next.length });
@@ -82,14 +86,14 @@ export default function WatchlistDetail({ id, onChange }) {
 
   const saveNote = (item, note) =>
     attempt(async () => {
-      const { item: updated } = await send(`/api/watchlists/${id}/items/${item.id}`, "PATCH", { note });
+      const { item: updated } = await updateWatchlistItem(id, item.id, { note });
       setItems((is) => is.map((i) => (i.id === item.id ? updated : i)));
       return true;
     });
 
   const removeItem = (item) =>
     attempt(async () => {
-      await send(`/api/watchlists/${id}/items/${item.id}`, "DELETE");
+      await removeWatchlistItem(id, item.id);
       const next = items.filter((i) => i.id !== item.id);
       setItems(next);
       onChange({ itemCount: next.length });

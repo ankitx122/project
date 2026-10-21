@@ -12,7 +12,6 @@ function Loading() {
   );
 }
 
-// MapLibre is its own chunk, so it only downloads once a map is shown.
 const VectorMap = dynamic(() => import("./VectorMap"), { ssr: false, loading: Loading });
 
 const MODES = [
@@ -20,14 +19,12 @@ const MODES = [
   { id: "earth", label: "Earth", hint: "3D earth that flattens as you zoom in", projection: "globe", Icon: Earth },
 ];
 
-// Map / earth canvas with a segmented view switcher overlaid in the corner.
 export default function GeoView({ markers, focusId, className = "" }) {
   const [mode, setMode] = useState("map");
   const { projection } = MODES.find((m) => m.id === mode);
 
   return (
     <div className={`relative overflow-hidden bg-zinc-950 ${className}`}>
-      {/* Keyed by mode only: new results update the same map in place instead of rebuilding it. */}
       <VectorMap key={mode} markers={markers} focusId={focusId} projection={projection} />
       <div
         role="radiogroup"

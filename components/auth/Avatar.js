@@ -19,7 +19,6 @@ export default function Avatar({ user, size = "sm" }) {
   const cls = `${SIZES[size]} shrink-0 rounded-full ring-1 ring-white/10`;
   if (user?.avatarUrl && !failed) {
     return (
-      // Google profile photos can refuse requests that carry a referrer.
       // eslint-disable-next-line @next/next/no-img-element
       <img src={user.avatarUrl} alt="" referrerPolicy="no-referrer" onError={() => setFailed(true)} className={`${cls} object-cover`} />
     );

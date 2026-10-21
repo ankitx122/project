@@ -8,7 +8,6 @@ import { KIND_LABELS, timeAgo } from "@/lib/format";
 
 const iconButton = "rounded-md p-1.5 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-200";
 
-// One saved query: link back to its lookup, summary, and an editable note.
 export default function WatchlistItem({ item, onSaveNote, onRemove }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(item.note ?? "");
