@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import AppHeader from "@/components/AppHeader";
 import AuthProvider from "@/components/auth/AuthProvider";
+import AppToaster from "@/components/ui/AppToaster";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <AppHeader />
           {children}
+          <AppToaster />
         </AuthProvider>
       </body>
     </html>

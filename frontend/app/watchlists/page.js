@@ -1,3 +1,4 @@
+import RequireAuth from "@/components/auth/RequireAuth";
 import Watchlists from "@/components/watchlists/Watchlists";
 
 export const metadata = {
@@ -8,8 +9,10 @@ export const instant = false;
 
 export default function WatchlistsPage() {
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-10 sm:px-6">
-      <Watchlists />
-    </main>
+    <RequireAuth>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-10 sm:px-6">
+        <Watchlists />
+      </main>
+    </RequireAuth>
   );
 }

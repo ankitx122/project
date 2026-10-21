@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Check, Eye, EyeOff } from "lucide-react";
-import Notice from "@/components/ui/Notice";
+import { googleOnlyToast } from "@/components/ui/AppToaster";
 import { gsap, useGSAP, withMotion } from "@/lib/gsap";
 import { PASSWORD_MIN, PASSWORD_RULES, signInSchema, signUpSchema, validate } from "@/lib/validation/auth";
 
@@ -52,7 +52,6 @@ export default function EmailForm({ mode, introDelay = 0 }) {
   const [remember, setRemember] = useState(true);
   const [errors, setErrors] = useState({});
   const [attempted, setAttempted] = useState(false);
-  const [notice, setNotice] = useState(null);
 
   useGSAP(
     () => {
@@ -70,17 +69,9 @@ export default function EmailForm({ mode, introDelay = 0 }) {
     { scope: ref },
   );
 
-  useGSAP(
-    () => {
-      if (notice) withMotion(() => gsap.fromTo("[data-anim=notice]", { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" }));
-    },
-    { scope: ref, dependencies: [notice] },
-  );
-
   const set = (key) => (e) => {
     const next = { ...values, [key]: e.target.value };
     setValues(next);
-    setNotice(null);
     if (attempted) setErrors(validate(schema, next).errors);
     else setErrors((err) => ({ ...err, [key]: undefined }));
   };
@@ -94,9 +85,9 @@ export default function EmailForm({ mode, introDelay = 0 }) {
     if (invalid.length) {
       shake(e.currentTarget, invalid);
       e.currentTarget.querySelector(`#${invalid[0]}`)?.focus();
-      return setNotice(null);
+      return;
     }
-    setNotice("Email sign-in isn't available yet. Use Google above for now.");
+    googleOnlyToast(signUp ? "Email sign-up isn't available." : "Email sign-in isn't available.");
   }
 
   const invalidProps = (key) => ({ "aria-invalid": !!errors[key], "aria-describedby": errors[key] ? `${key}-error` : undefined });
@@ -169,17 +160,11 @@ export default function EmailForm({ mode, introDelay = 0 }) {
           </label>
           <button
             type="button"
-            onClick={() => setNotice("Password reset isn't available yet. Use Google above for now.")}
+            onClick={() => googleOnlyToast("Password reset isn't available.")}
             className="text-zinc-400 transition-colors hover:text-zinc-100"
           >
             Forgot password?
           </button>
-        </div>
-      )}
-
-      {notice && (
-        <div data-anim="notice">
-          <Notice tone="info">{notice}</Notice>
         </div>
       )}
 
