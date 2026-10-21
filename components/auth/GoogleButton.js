@@ -11,15 +11,20 @@ function GoogleLogo() {
   );
 }
 
+const VARIANTS = {
+  light: "h-11 rounded-lg bg-white text-zinc-900 hover:bg-zinc-200",
+  dark: "h-12 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-100 hover:border-zinc-700 hover:bg-zinc-900",
+};
+
 // Full-page link through the API to Google's consent screen.
-export default function GoogleButton({ returnTo = "/profile" }) {
+export default function GoogleButton({ returnTo = "/profile", label = "Continue with Google", variant = "light" }) {
   return (
     <a
       href={googleSignInUrl(returnTo)}
-      className="flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-white px-4 text-[14px] font-medium text-zinc-900 transition-colors hover:bg-zinc-200"
+      className={`flex w-full items-center justify-center gap-3 px-4 text-[14px] font-medium transition-colors ${VARIANTS[variant]}`}
     >
       <GoogleLogo />
-      Continue with Google
+      {label}
     </a>
   );
 }

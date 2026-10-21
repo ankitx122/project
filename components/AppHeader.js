@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Map as MapIcon, Radar, Search } from "lucide-react";
+import { Bookmark, Layers, Map as MapIcon, Radar, Search } from "lucide-react";
 import UserMenu from "@/components/auth/UserMenu";
 
 const LINKS = [
   { href: "/", label: "Lookup", Icon: Search },
+  { href: "/bulk", label: "Bulk", Icon: Layers },
   { href: "/map", label: "Map", Icon: MapIcon },
+  { href: "/watchlists", label: "Watchlists", Icon: Bookmark },
 ];
 
 export default function AppHeader() {
@@ -35,7 +37,8 @@ export default function AppHeader() {
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
-                {label}
+                {/* Icons only on phones, so all links fit beside the account menu. */}
+                <span className="sr-only sm:not-sr-only">{label}</span>
               </Link>
             );
           })}

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Map as MapIcon } from "lucide-react";
 import { buildMarkers } from "@/components/geo/markers";
 import ResultSkeleton from "@/components/ui/Skeleton";
+import SaveToWatchlist from "@/components/watchlists/SaveToWatchlist";
+import { summarize } from "@/lib/format";
 import { Features, HeroSuggestions } from "./EmptyState";
 import Notices from "./Notices";
 import ResultHeader, { ActionLink } from "./ResultHeader";
@@ -86,12 +88,17 @@ function Result({ data, query }) {
         title={data.host}
         copy={data.host}
         meta={`Resolves to ${data.results.length} address${data.results.length === 1 ? "" : "es"}`}
-        actions={mapped > 0 && (
-          <ActionLink as={Link} href={`/map?q=${encodeURIComponent(query)}`}>
-            <MapIcon className="h-3.5 w-3.5" />
-            Open in map
-          </ActionLink>
-        )}
+        actions={
+          <>
+            <SaveToWatchlist key={query} items={[{ query, summary: summarize(data) }]} />
+            {mapped > 0 && (
+              <ActionLink as={Link} href={`/map?q=${encodeURIComponent(query)}`}>
+                <MapIcon className="h-3.5 w-3.5" />
+                Open in map
+              </ActionLink>
+            )}
+          </>
+        }
       />
       <div className="divide-y divide-zinc-800">
         {data.results.map((r) => (

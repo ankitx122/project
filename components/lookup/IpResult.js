@@ -6,8 +6,10 @@ import CopyButton from "@/components/ui/CopyButton";
 import Field, { FieldList } from "@/components/ui/Field";
 import Flag from "@/components/ui/Flag";
 import Section from "@/components/ui/Section";
-import { isEmpty, place } from "@/lib/format";
+import SaveToWatchlist from "@/components/watchlists/SaveToWatchlist";
+import { isEmpty, place, summarize } from "@/lib/format";
 import ResultHeader, { ActionLink, Dot } from "./ResultHeader";
+import WhoisSection from "./WhoisSection";
 
 const FLAG_LABELS = { proxy: "Proxy", hosting: "Hosting", mobile: "Mobile" };
 
@@ -48,12 +50,17 @@ export default function IpResult({ result, nested = false }) {
           </>
         )}
         badges={badges.length > 0 && badges}
-        actions={hasCoords && (
-          <ActionLink as={Link} href={mapHref}>
-            <MapIcon className="h-3.5 w-3.5" />
-            Open in map
-          </ActionLink>
-        )}
+        actions={
+          <>
+            <SaveToWatchlist key={result.ip} items={[{ query: result.ip, summary: summarize(result) }]} />
+            {hasCoords && (
+              <ActionLink as={Link} href={mapHref}>
+                <MapIcon className="h-3.5 w-3.5" />
+                Open in map
+              </ActionLink>
+            )}
+          </>
+        }
       />
 
       {!info ? (
@@ -117,6 +124,8 @@ export default function IpResult({ result, nested = false }) {
               </Section>
             )}
           </div>
+
+          {!result.reserved && <WhoisSection key={result.ip} query={result.ip} />}
 
           <details className="group rounded-lg border border-zinc-800">
             <summary className="flex cursor-pointer list-none items-center [&::-webkit-details-marker]:hidden justify-between px-4 py-2.5 text-[13px] text-zinc-400 hover:text-zinc-200">

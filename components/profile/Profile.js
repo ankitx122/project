@@ -12,9 +12,7 @@ import Notice from "@/components/ui/Notice";
 import Section from "@/components/ui/Section";
 import StatStrip from "@/components/ui/StatStrip";
 import { api } from "@/lib/api";
-import { formatDate, timeAgo } from "@/lib/format";
-
-const KIND_LABELS = { ip: "IP", host: "Hostname", cidr: "CIDR", range: "Range" };
+import { formatDate, KIND_LABELS, timeAgo } from "@/lib/format";
 
 export default function Profile() {
   const { user, loading, refresh, signOut } = useAuth();
@@ -133,7 +131,8 @@ export default function Profile() {
             </div>
           )
         ) : (
-          <ul className="divide-y divide-zinc-800/70">
+          // Long histories scroll inside the panel instead of stretching the page.
+          <ul className="max-h-[28rem] divide-y divide-zinc-800/70 overflow-y-auto overscroll-contain">
             {history.items.map((h) => (
               <li key={h.id} className="group flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-zinc-900/60">
                 <Link href={`/?q=${encodeURIComponent(h.query)}`} className="flex min-w-0 flex-1 items-center gap-3">

@@ -10,7 +10,7 @@ export default function Bars({ items, total, label }) {
         return (
           <li key={i} className="text-[13px]">
             <div className="flex items-center justify-between gap-3">
-              <span className="flex min-w-0 items-center gap-2 truncate text-zinc-200">{label(it)}</span>
+              <span className="flex min-w-0 items-center gap-2 truncate text-zinc-200">{label(it, i)}</span>
               <span className="shrink-0 font-mono text-[12px] tabular-nums text-zinc-500">
                 {fmt(it.ips)} <span className="text-zinc-600">·</span> {pct.toFixed(1)}%
               </span>
