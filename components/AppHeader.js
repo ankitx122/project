@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bookmark, Layers, Map as MapIcon, Radar, Search } from "lucide-react";
+import { useAuth } from "@/components/auth/AuthProvider";
 import UserMenu from "@/components/auth/UserMenu";
 
 const LINKS = [
@@ -14,6 +15,7 @@ const LINKS = [
 
 export default function AppHeader() {
   const pathname = usePathname();
+  const { user } = useAuth();
   return (
     <header className="sticky top-0 z-30 border-b border-zinc-800/80 bg-zinc-950/85 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/70">
       <div className="flex h-14 items-center gap-3 px-4 sm:gap-6 sm:px-6">
@@ -24,24 +26,26 @@ export default function AppHeader() {
           </span>
           <span className="hidden sm:inline">IP Intelligence</span>
         </Link>
-        <nav className="flex items-center gap-1 text-[13px]">
-          {LINKS.map(({ href, label, Icon }) => {
-            const active = pathname === href;
-            return (
-              <Link
-                key={href}
-                href={href}
-                aria-current={active ? "page" : undefined}
-                className={`inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 transition-colors ${
-                  active ? "bg-zinc-800/80 text-zinc-50" : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200"
-                }`}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only">{label}</span>
-              </Link>
-            );
-          })}
-        </nav>
+        {user && (
+          <nav className="flex items-center gap-1 text-[13px]">
+            {LINKS.map(({ href, label, Icon }) => {
+              const active = pathname === href;
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={active ? "page" : undefined}
+                  className={`inline-flex h-8 items-center gap-1.5 rounded-md px-2.5 transition-colors ${
+                    active ? "bg-zinc-800/80 text-zinc-50" : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200"
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  <span className="sr-only sm:not-sr-only">{label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+        )}
         <div className="ml-auto flex items-center gap-4">
           <UserMenu />
         </div>

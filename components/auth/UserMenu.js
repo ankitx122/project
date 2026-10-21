@@ -75,7 +75,7 @@ export default function UserMenu() {
               onClick={async () => {
                 setOpen(false);
                 await signOut();
-                router.push("/");
+                router.push("/login");
               }}
               className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-[13px] text-zinc-300 hover:bg-zinc-800 hover:text-zinc-50"
             >

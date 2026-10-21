@@ -76,7 +76,7 @@ export default function Profile() {
           type="button"
           onClick={async () => {
             await signOut();
-            router.push("/");
+            router.push("/login");
           }}
           className="inline-flex h-8 items-center gap-1.5 rounded-md border border-zinc-800 bg-zinc-900/60 px-2.5 text-[13px] text-zinc-200 transition-colors hover:border-zinc-700 hover:bg-zinc-800/70"
         >

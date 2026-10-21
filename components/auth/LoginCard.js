@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { Suspense, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import Notice from "@/components/ui/Notice";
 import { gsap, useGSAP, withMotion } from "@/lib/gsap";
-import Avatar from "./Avatar";
+import { safeReturnTo } from "@/lib/returnTo";
 import { useAuth } from "./AuthProvider";
 import EmailForm from "./EmailForm";
 import GoogleButton from "./GoogleButton";
@@ -37,25 +36,18 @@ function Divider() {
   );
 }
 
-function SignedIn({ user }) {
+function Redirecting() {
   return (
-    <div data-anim="card-item" className="space-y-5">
-      <div className="flex items-center gap-3 rounded-xl bg-zinc-900 p-4">
-        <Avatar user={user} size="md" />
-        <div className="min-w-0">
-          <div className="truncate text-[14px] text-zinc-100">{user.name}</div>
-          <div className="truncate text-[12.5px] text-zinc-500">{user.email}</div>
-        </div>
-      </div>
-      <Link
-        href="/profile"
-        className="flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-700 text-[14px] font-medium text-white transition hover:from-emerald-400 hover:to-emerald-600"
-      >
-        Go to your profile
-        <ArrowRight className="h-4 w-4" />
-      </Link>
+    <div data-anim="card-item" className="flex items-center justify-center gap-2 py-6 text-[13px] text-zinc-500">
+      <Loader2 className="h-4 w-4 animate-spin" />
+      Taking you to the app…
     </div>
   );
+}
+
+function GoogleSignIn({ label }) {
+  const returnTo = safeReturnTo(useSearchParams().get("returnTo"));
+  return <GoogleButton label={label} variant="dark" returnTo={returnTo} />;
 }
 
 export default function LoginCard() {
@@ -63,8 +55,13 @@ export default function LoginCard() {
   const [mode, setMode] = useState("signin");
   const [switched, setSwitched] = useState(false);
   const ref = useRef(null);
+  const router = useRouter();
   const copy = user ? { title: "You're signed in", text: "Pick up where you left off." } : COPY[mode];
   const signIn = mode === "signin";
+
+  useEffect(() => {
+    if (user) router.replace(safeReturnTo(new URLSearchParams(window.location.search).get("returnTo")));
+  }, [user, router]);
 
   useGSAP(
     () => {
@@ -112,11 +109,13 @@ export default function LoginCard() {
             <div className="h-12 animate-pulse rounded-xl bg-zinc-900/70" />
           </div>
         ) : user ? (
-          <SignedIn user={user} />
+          <Redirecting />
         ) : (
           <>
             <div data-anim="card-item">
-              <GoogleButton label={signIn ? "Sign in with Google" : "Sign up with Google"} variant="dark" />
+              <Suspense fallback={<GoogleButton label={signIn ? "Sign in with Google" : "Sign up with Google"} variant="dark" returnTo="/" />}>
+                <GoogleSignIn label={signIn ? "Sign in with Google" : "Sign up with Google"} />
+              </Suspense>
             </div>
             <Divider />
             <EmailForm key={mode} mode={mode} introDelay={switched ? 0 : 0.3} />

@@ -6,7 +6,7 @@ const VARIANTS = {
   dark: "h-12 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-100 hover:border-zinc-700 hover:bg-zinc-900",
 };
 
-export default function GoogleButton({ returnTo = "/profile", label = "Continue with Google", variant = "light" }) {
+export default function GoogleButton({ returnTo = "/", label = "Continue with Google", variant = "light" }) {
   return (
     <a
       href={googleSignInUrl(returnTo)}
